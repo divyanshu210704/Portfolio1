@@ -1,5 +1,8 @@
+import { useState } from 'react';
+import { AnimatePresence } from 'framer-motion';
 import Cursor from './components/Cursor';
 import Navbar from './components/Navbar';
+import Preloader from './components/Preloader';
 import Hero from './components/Hero';
 import CharacterProfile from './components/CharacterProfile';
 import OriginStory from './components/OriginStory';
@@ -19,6 +22,14 @@ import Marquee from './components/Marquee';
  * toward → how he's written → what happens next → to be continued.
  */
 export default function App() {
+  // The Netflix-style entry replays on every refresh; reduced-motion
+  // users skip straight to the story.
+  const [entered, setEntered] = useState(
+    () =>
+      typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  );
+
   return (
     <div className="grain relative">
       <a
@@ -27,10 +38,13 @@ export default function App() {
       >
         Skip to the story
       </a>
+      <AnimatePresence>
+        {!entered && <Preloader onDone={() => setEntered(true)} />}
+      </AnimatePresence>
       <Cursor />
       <Navbar />
       <main>
-        <Hero />
+        <Hero started={entered} />
         <CharacterProfile />
         <Marquee />
         <OriginStory />

@@ -101,7 +101,7 @@ export default function EndOfChapter() {
 
         {/* credits line */}
         <div className="mt-20 flex flex-col items-center justify-between gap-4 border-t border-line pt-8 font-mono text-[10px] tracking-[0.3em] text-fog/50 sm:flex-row">
-          <span>CHARACTER 01 — STILL BECOMING</span>
+          <span>CHARACTER 21 — STILL BECOMING</span>
           <span>WRITTEN IN REACT · DIRECTED BY CURIOSITY</span>
         </div>
       </div>

@@ -7,16 +7,16 @@
  * ------------------------------------------------------------------ */
 
 export const character = {
-  id: 'CHARACTER 01',
+  id: 'CHARACTER 21',
   epithet: 'THE ONE WHO IS STILL BECOMING.',
-  name: 'DIVYANSHU',
+  name: 'DIVYANSHU SINGH CHAUHAN',
   tagline: 'Computer Science Student · Builder · Learner',
   introLine: 'Every character has a beginning. This is mine.',
   cta: 'ENTER THE STORY',
 };
 
 export const profile = {
-  name: 'Divyanshu',
+  name: 'Divyanshu Singh Chauhan',
   klass: 'Computer Science Student',
   level: 21,
   location: 'India', // PLACEHOLDER — your city / region

@@ -11,12 +11,15 @@ const EASE = [0.22, 1, 0.36, 1] as const;
  * then the name revealed like a title card. Parallaxes away as the
  * visitor scrolls into the story.
  */
-export default function Hero() {
+export default function Hero({ started = true }: { started?: boolean }) {
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] });
   const nameY = useTransform(scrollYProgress, [0, 1], [0, -120]);
   const fade = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
   const giantY = useTransform(scrollYProgress, [0, 1], [0, 140]);
+
+  // Until the entry finishes, every element stays at its hidden initial state.
+  const play = <T extends object>(target: T): T | undefined => (started ? target : undefined);
 
   const enterStory = () => {
     document.getElementById('character')?.scrollIntoView({ behavior: 'smooth' });
@@ -29,20 +32,20 @@ export default function Hero() {
       aria-label="Opening title sequence"
       className="relative flex min-h-svh flex-col items-center justify-center overflow-hidden"
     >
-      {/* backdrop: giant outlined "01" + scanline */}
+      {/* backdrop: giant outlined character number + scanline */}
       <motion.span
         aria-hidden="true"
         style={{ y: giantY }}
         className="text-stroke pointer-events-none absolute select-none font-display text-[38vw] font-bold leading-none"
       >
-        01
+        21
       </motion.span>
       <div className="scanline" aria-hidden="true" />
 
       {/* top meta row */}
       <motion.div
         initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
+        animate={play({ opacity: 1 })}
         transition={{ duration: 1, delay: 0.4 }}
         className="absolute left-6 right-6 top-20 flex items-center justify-between font-mono text-[10px] tracking-[0.35em] text-fog/70 sm:left-10 sm:right-10 sm:text-xs"
       >
@@ -54,7 +57,7 @@ export default function Hero() {
         {/* glitchy file label */}
         <motion.p
           initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+          animate={play({ opacity: 1 })}
           transition={{ duration: 0.8, delay: 0.6 }}
           data-cursor
           className="glitch group relative mb-6 font-mono text-xs tracking-[0.5em] text-ember sm:text-sm"
@@ -68,7 +71,7 @@ export default function Hero() {
         <div className="mb-8 overflow-hidden">
           <motion.p
             initial={{ y: '110%' }}
-            animate={{ y: 0 }}
+            animate={play({ y: 0 })}
             transition={{ duration: 0.9, delay: 1.1, ease: EASE }}
             className="font-mono text-xs tracking-[0.3em] text-fog sm:text-sm"
           >
@@ -76,30 +79,44 @@ export default function Hero() {
           </motion.p>
         </div>
 
-        {/* the name, letter by letter */}
+        {/* the name — first name huge, full name as the credit line */}
         <motion.h1
           style={{ y: nameY }}
           className="font-display text-[16vw] font-bold leading-[0.9] tracking-tight text-ink sm:text-[12vw] lg:text-[9.5rem]"
           aria-label={character.name}
         >
-          {character.name.split('').map((letter, i) => (
-            <motion.span
-              key={i}
-              aria-hidden="true"
-              className="inline-block will-change-transform"
-              initial={{ y: '115%', rotate: 4 }}
-              animate={{ y: 0, rotate: 0 }}
-              transition={{ duration: 0.9, delay: 1.6 + i * 0.05, ease: EASE }}
-            >
-              {letter}
-            </motion.span>
-          ))}
+          {character.name
+            .split(' ')[0]
+            .split('')
+            .map((letter, i) => (
+              <motion.span
+                key={i}
+                aria-hidden="true"
+                className="inline-block will-change-transform"
+                initial={{ y: '115%', rotate: 4 }}
+                animate={play({ y: 0, rotate: 0 })}
+                transition={{ duration: 0.9, delay: 1.6 + i * 0.05, ease: EASE }}
+              >
+                {letter}
+              </motion.span>
+            ))}
         </motion.h1>
+        <div className="mt-3 overflow-hidden">
+          <motion.p
+            initial={{ y: '110%' }}
+            animate={play({ y: 0 })}
+            transition={{ duration: 0.8, delay: 2.2, ease: EASE }}
+            className="font-display text-[5.5vw] font-medium tracking-[0.18em] text-ember sm:text-3xl"
+            aria-hidden="true"
+          >
+            {character.name.split(' ').slice(1).join(' ')}
+          </motion.p>
+        </div>
 
         {/* tagline */}
         <motion.p
           initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
+          animate={play({ opacity: 1, y: 0 })}
           transition={{ duration: 0.8, delay: 2.5, ease: EASE }}
           className="mt-6 font-mono text-xs tracking-[0.25em] text-fog sm:text-sm"
         >
@@ -109,7 +126,7 @@ export default function Hero() {
         {/* intro line */}
         <motion.p
           initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+          animate={play({ opacity: 1 })}
           transition={{ duration: 1, delay: 3 }}
           className="mt-10 max-w-md font-body text-base italic text-ink/80 sm:text-lg"
         >
@@ -119,7 +136,7 @@ export default function Hero() {
         {/* CTA */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          animate={play({ opacity: 1, y: 0 })}
           transition={{ duration: 0.8, delay: 3.5, ease: EASE }}
           className="mt-14"
         >
@@ -144,7 +161,7 @@ export default function Hero() {
       {/* bottom hint */}
       <motion.div
         initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
+        animate={play({ opacity: 1 })}
         transition={{ duration: 1, delay: 4.2 }}
         className="absolute bottom-8 flex flex-col items-center gap-2 font-mono text-[10px] tracking-[0.4em] text-fog/50"
       >
